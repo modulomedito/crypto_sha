@@ -225,11 +225,10 @@ static void crypto_sha256__Ctx_hash(crypto_sha256__Ctx* self) {
         if (i < 16) {
             self->u32_buf[i] = crypto_sha256__word(&self->data_buf[crypto_sha256__shw(i, 2)]);
         } else {
-            self->u32_buf[i] = //
-                crypto_sha256__g1(self->u32_buf[i - 2]) + //
-                self->u32_buf[i - 7] + //
-                crypto_sha256__g0(self->u32_buf[i - 15]) + //
-                self->u32_buf[i - 16];
+            self->u32_buf[i] = crypto_sha256__g1(self->u32_buf[i - 2]) + //
+                               self->u32_buf[i - 7] + //
+                               crypto_sha256__g0(self->u32_buf[i - 15]) + //
+                               self->u32_buf[i - 16];
         }
 
         temp_buf[0] = h + crypto_sha256__s1(e) + //
