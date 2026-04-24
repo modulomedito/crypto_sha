@@ -81,7 +81,9 @@ void crypto_sha256__compute(const u8* data_ref, u32 len, u8* hash_mut) {
 }
 
 void crypto_sha256__Ctx_init(crypto_sha256__Ctx* self) {
-    self->bits_buf[0] = self->bits_buf[1] = self->len = 0;
+    self->len = 0;
+    self->bits_buf[0] = 0;
+    self->bits_buf[1] = 0;
     self->hash_buf[0] = 0x6a09e667;
     self->hash_buf[1] = 0xbb67ae85;
     self->hash_buf[2] = 0x3c6ef372;
@@ -96,7 +98,7 @@ void crypto_sha256__Ctx_update(crypto_sha256__Ctx* self, const u8* data_ref, u32
     if (data_ref == NULL) {
         return;
     }
-    if (self->len < sizeof(self->data_buf)) {
+    if (self->len >= sizeof(self->data_buf)) {
         return;
     }
 
@@ -259,3 +261,170 @@ static void crypto_sha256__Ctx_hash(crypto_sha256__Ctx* self) {
 //==================================================================================================
 // TEST
 //==================================================================================================
+#include <stdio.h>
+#include <string.h>
+
+typedef enum {
+    crypto_sha256__TestResult_0000Failed = -10000,
+    crypto_sha256__TestResult_0001Failed,
+    crypto_sha256__TestResult_0002Failed,
+    crypto_sha256__TestResult_0003Failed,
+    crypto_sha256__TestResult_0004Failed,
+    crypto_sha256__TestResult_0005Failed,
+    crypto_sha256__TestResult_0006Failed,
+    crypto_sha256__TestResult_0007Failed,
+} crypto_sha256__TestResult;
+
+static i32 crypto_sha256__test_tc1(void) {
+    u8 data_buf[] = {"abc"};
+    u8 hash_buf[CRYPTO_SHA256__BLOCK_U8_SIZE];
+    u8 expected_hash_buf[CRYPTO_SHA256__BLOCK_U8_SIZE] = {
+        0xba, 0x78, 0x16, 0xbf, 0x8f, 0x01, 0xcf, 0xea, //
+        0x41, 0x41, 0x40, 0xde, 0x5d, 0xae, 0x22, 0x23, //
+        0xb0, 0x03, 0x61, 0xa3, 0x96, 0x17, 0x7a, 0x9c, //
+        0xb4, 0x10, 0xff, 0x61, 0xf2, 0x00, 0x15, 0xad, //
+    };
+
+    crypto_sha256__compute(data_buf, strlen(data_buf), hash_buf);
+    if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
+        printf("%X\n", hash_buf[0]);
+        printf("%X\n", hash_buf[1]);
+        printf("%X\n", hash_buf[2]);
+        printf("%X\n", hash_buf[3]);
+        printf("%X\n", hash_buf[4]);
+        return crypto_sha256__TestResult_0000Failed;
+    }
+
+    crypto_sha256__Ctx ctx;
+    crypto_sha256__Ctx_init(&ctx);
+    crypto_sha256__Ctx_update(&ctx, &data_buf[0], strlen(data_buf) / 2);
+    crypto_sha256__Ctx_update(
+        &ctx,
+        &data_buf[strlen(data_buf) / 2],
+        strlen(data_buf) - (strlen(data_buf) / 2)
+    );
+    crypto_sha256__Ctx_finalize(&ctx, hash_buf);
+    if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
+        return crypto_sha256__TestResult_0001Failed;
+    }
+
+    return 0;
+}
+
+static i32 crypto_sha256__test_tc2(void) {
+    u8 data_buf[] = {"abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"};
+    u8 hash_buf[CRYPTO_SHA256__BLOCK_U8_SIZE];
+    u8 expected_hash_buf[CRYPTO_SHA256__BLOCK_U8_SIZE] = {
+        0x24, 0x8d, 0x6a, 0x61, 0xd2, 0x06, 0x38, 0xb8, //
+        0xe5, 0xc0, 0x26, 0x93, 0x0c, 0x3e, 0x60, 0x39, //
+        0xa3, 0x3c, 0xe4, 0x59, 0x64, 0xff, 0x21, 0x67, //
+        0xf6, 0xec, 0xed, 0xd4, 0x19, 0xdb, 0x06, 0xc1, //
+    };
+
+    crypto_sha256__compute(data_buf, strlen(data_buf), hash_buf);
+    if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
+        return crypto_sha256__TestResult_0002Failed;
+    }
+
+    crypto_sha256__Ctx ctx;
+    crypto_sha256__Ctx_init(&ctx);
+    crypto_sha256__Ctx_update(&ctx, &data_buf[0], strlen(data_buf) / 2);
+    crypto_sha256__Ctx_update(
+        &ctx,
+        &data_buf[strlen(data_buf) / 2],
+        strlen(data_buf) - (strlen(data_buf) / 2)
+    );
+    crypto_sha256__Ctx_finalize(&ctx, hash_buf);
+    if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
+        return crypto_sha256__TestResult_0003Failed;
+    }
+
+    return 0;
+}
+
+static i32 crypto_sha256__test_tc3(void) {
+    u8 data_buf[] = {
+        "bhn5bjmoniertqea40wro2upyflkydsibsk8ylkmgbvwi420t44cq034eou1szc1k0mk46oeb7ktzmlxqkbte2sy"
+    };
+    u8 hash_buf[CRYPTO_SHA256__BLOCK_U8_SIZE];
+    u8 expected_hash_buf[CRYPTO_SHA256__BLOCK_U8_SIZE] = {
+        0x90, 0x85, 0xdf, 0x2f, 0x02, 0xe0, 0xcc, 0x45, //
+        0x59, 0x28, 0xd0, 0xf5, 0x1b, 0x27, 0xb4, 0xbf, //
+        0x1d, 0x9c, 0xd2, 0x60, 0xa6, 0x6e, 0xd1, 0xfd, //
+        0xa1, 0x1b, 0x0a, 0x3f, 0xf5, 0x75, 0x6d, 0x99, //
+    };
+
+    crypto_sha256__compute(data_buf, strlen(data_buf), hash_buf);
+    if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
+        return crypto_sha256__TestResult_0004Failed;
+    }
+
+    crypto_sha256__Ctx ctx;
+    crypto_sha256__Ctx_init(&ctx);
+    crypto_sha256__Ctx_update(&ctx, &data_buf[0], strlen(data_buf) / 2);
+    crypto_sha256__Ctx_update(
+        &ctx,
+        &data_buf[strlen(data_buf) / 2],
+        strlen(data_buf) - (strlen(data_buf) / 2)
+    );
+    crypto_sha256__Ctx_finalize(&ctx, hash_buf);
+    if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
+        return crypto_sha256__TestResult_0005Failed;
+    }
+
+    return 0;
+}
+
+static i32 crypto_sha256__test_tc4(void) {
+    u8 data_buf[] = {""};
+    u8 hash_buf[CRYPTO_SHA256__BLOCK_U8_SIZE];
+    u8 expected_hash_buf[CRYPTO_SHA256__BLOCK_U8_SIZE] = {
+        0xe3, 0xb0, 0xc4, 0x42, 0x98, 0xfc, 0x1c, 0x14, //
+        0x9a, 0xfb, 0xf4, 0xc8, 0x99, 0x6f, 0xb9, 0x24, //
+        0x27, 0xae, 0x41, 0xe4, 0x64, 0x9b, 0x93, 0x4c, //
+        0xa4, 0x95, 0x99, 0x1b, 0x78, 0x52, 0xb8, 0x55, //
+    };
+
+    crypto_sha256__compute(data_buf, strlen(data_buf), hash_buf);
+    if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
+        return crypto_sha256__TestResult_0006Failed;
+    }
+
+    crypto_sha256__Ctx ctx;
+    crypto_sha256__Ctx_init(&ctx);
+    crypto_sha256__Ctx_update(&ctx, &data_buf[0], strlen(data_buf) / 2);
+    crypto_sha256__Ctx_update(
+        &ctx,
+        &data_buf[strlen(data_buf) / 2],
+        strlen(data_buf) - (strlen(data_buf) / 2)
+    );
+    crypto_sha256__Ctx_finalize(&ctx, hash_buf);
+    if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
+        return crypto_sha256__TestResult_0007Failed;
+    }
+
+    return 0;
+}
+
+i32 crypto_sha256__test(void) {
+    i32 result;
+
+    result = crypto_sha256__test_tc1();
+    if (result < 0) {
+        return result;
+    }
+    result = crypto_sha256__test_tc2();
+    if (result < 0) {
+        return result;
+    }
+    result = crypto_sha256__test_tc3();
+    if (result < 0) {
+        return result;
+    }
+    result = crypto_sha256__test_tc4();
+    if (result < 0) {
+        return result;
+    }
+
+    return 0;
+}
