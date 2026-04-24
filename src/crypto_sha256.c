@@ -260,7 +260,6 @@ static void crypto_sha256__Ctx_hash(crypto_sha256__Ctx* self) {
 //==================================================================================================
 // TEST
 //==================================================================================================
-#include <stdio.h>
 #include <string.h>
 
 typedef enum {
@@ -286,11 +285,6 @@ static i32 crypto_sha256__test_tc1(void) {
 
     crypto_sha256__compute(data_buf, strlen(data_buf), hash_buf);
     if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
-        printf("%X\n", hash_buf[0]);
-        printf("%X\n", hash_buf[1]);
-        printf("%X\n", hash_buf[2]);
-        printf("%X\n", hash_buf[3]);
-        printf("%X\n", hash_buf[4]);
         return crypto_sha256__TestResult_0000Failed;
     }
 
