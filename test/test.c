@@ -2,7 +2,7 @@
 /// @file       test.c
 /// @author     modulomedito (chcchc1995@outlook.com)
 /// @brief
-/// @copyright  Copyright (C) 2026. All rights reserved.
+/// @copyright  Copyright (C) 2026. MIT License.
 /// @details
 //==================================================================================================
 //==================================================================================================
@@ -20,6 +20,7 @@
 //==================================================================================================
 #define TEST__CONCAT_HELPER(a, b) a##b
 #define TEST__CONCAT(a, b) TEST__CONCAT_HELPER(a, b)
+
 #define TEST__RUN(mod)                                                                             \
     do {                                                                                           \
         extern i32 TEST__CONCAT(mod, __test)(void);                                                \
