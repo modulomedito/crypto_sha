@@ -6,6 +6,7 @@
 *.ko
 *.obj
 *.elf
+/.xmake/
 compile_commands.json
 
 # Linker output

@@ -1,15 +1,11 @@
-set_plat("windows")
-set_arch("x86")
-
 -- Add the release and debug rules
 -- (release will be used by default unless you pass -m)
 add_rules("mode.release", "mode.debug")
 
--- Optional: force the windows platform and 32-bit arch when configuring via
--- `xmake f` you can alsopass these on the command line:
--- `xmake f -p windows -a x86 -m release`
-target("security_access")
-    -- Set the target kind to a shared library (.dll)
+-- Optional: You can specify platform and arch via command line:
+-- `xmake f -p macosx -a arm64 -m release`
+target("crypto_sha")
+    -- Set the target kind to a shared library (.dll on Windows, .dylib on macOS)
     set_kind("shared")
     -- Set the C and C++ language standards
     set_languages("c11", "c++17")
@@ -25,11 +21,14 @@ target("security_access")
 
     -- Apply the collected include directories to the target
     add_includedirs(includes)
-    -- Set the C runtime library to multi-threaded (MT)
-    set_runtimes("MT")
+
+    -- Set the C runtime library to multi-threaded (MT) only for Windows
+    if is_plat("windows") then
+        set_runtimes("MT")
+    end
 
     -- Define a test suite for the security access module
-    add_tests("security_access_test", {
+    add_tests("crypto_sha_test", {
         -- The test target is a standalone binary
         kind = "binary",
         -- Use C11 for the test code
@@ -42,10 +41,15 @@ target("security_access")
 
     -- Optimization and linker flags for release mode
     if is_mode("release") then
-        -- Enable Level 2 optimizations (/O2)
-        add_cxflags("/O2", { force = true })
-        -- Disable incremental linking for faster final builds
-        add_ldflags("/INCREMENTAL:NO", { force = true })
+        if is_plat("windows") then
+            -- Enable Level 2 optimizations (/O2)
+            add_cxflags("/O2", { force = true })
+            -- Disable incremental linking for faster final builds
+            add_ldflags("/INCREMENTAL:NO", { force = true })
+        else
+            -- For macOS/Linux (Clang/GCC)
+            set_optimize("fastest")
+        end
     end
 
 target("test")
