@@ -27,7 +27,7 @@
         i32 result = TEST__CONCAT(mod, __test)();                                                  \
         if (result < 0) {                                                                          \
             printf("Test " #mod " FAILED! Code = %d\n", result);                                   \
-            goto FAILED;                                                                           \
+            goto failed;                                                                           \
         }                                                                                          \
     } while (0)
 
@@ -67,7 +67,7 @@ i32 main(void) {
     printf("All tests passed!\n");
     return 0;
 
-FAILED:
+failed:
     return -1;
 }
 
