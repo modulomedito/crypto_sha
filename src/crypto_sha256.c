@@ -262,17 +262,6 @@ static void crypto_sha256__Ctx_hash(crypto_sha256__Ctx* self) {
 //==================================================================================================
 #include <string.h>
 
-typedef enum {
-    crypto_sha256__TestResult_0000Failed = -10000,
-    crypto_sha256__TestResult_0001Failed,
-    crypto_sha256__TestResult_0002Failed,
-    crypto_sha256__TestResult_0003Failed,
-    crypto_sha256__TestResult_0004Failed,
-    crypto_sha256__TestResult_0005Failed,
-    crypto_sha256__TestResult_0006Failed,
-    crypto_sha256__TestResult_0007Failed,
-} crypto_sha256__TestResult;
-
 static i32 crypto_sha256__test_tc1(void) {
     u8 data_buf[] = {"abc"};
     u8 hash_buf[CRYPTO_SHA256__BLOCK_U8_SIZE];
@@ -285,7 +274,7 @@ static i32 crypto_sha256__test_tc1(void) {
 
     crypto_sha256__compute(data_buf, strlen((const ichar*)data_buf), hash_buf);
     if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
-        return crypto_sha256__TestResult_0000Failed;
+        return __LINE__;
     }
 
     crypto_sha256__Ctx ctx;
@@ -298,7 +287,7 @@ static i32 crypto_sha256__test_tc1(void) {
     );
     crypto_sha256__Ctx_finalize(&ctx, hash_buf);
     if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
-        return crypto_sha256__TestResult_0001Failed;
+        return __LINE__;
     }
 
     return 0;
@@ -316,7 +305,7 @@ static i32 crypto_sha256__test_tc2(void) {
 
     crypto_sha256__compute(data_buf, strlen((const ichar*)data_buf), hash_buf);
     if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
-        return crypto_sha256__TestResult_0002Failed;
+        return __LINE__;
     }
 
     crypto_sha256__Ctx ctx;
@@ -329,7 +318,7 @@ static i32 crypto_sha256__test_tc2(void) {
     );
     crypto_sha256__Ctx_finalize(&ctx, hash_buf);
     if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
-        return crypto_sha256__TestResult_0003Failed;
+        return __LINE__;
     }
 
     return 0;
@@ -348,7 +337,7 @@ static i32 crypto_sha256__test_tc3(void) {
 
     crypto_sha256__compute(data_buf, strlen((const ichar*)data_buf), hash_buf);
     if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
-        return crypto_sha256__TestResult_0004Failed;
+        return __LINE__;
     }
 
     crypto_sha256__Ctx ctx;
@@ -361,7 +350,7 @@ static i32 crypto_sha256__test_tc3(void) {
     );
     crypto_sha256__Ctx_finalize(&ctx, hash_buf);
     if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
-        return crypto_sha256__TestResult_0005Failed;
+        return __LINE__;
     }
 
     return 0;
@@ -379,7 +368,7 @@ static i32 crypto_sha256__test_tc4(void) {
 
     crypto_sha256__compute(data_buf, strlen((const ichar*)data_buf), hash_buf);
     if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
-        return crypto_sha256__TestResult_0006Failed;
+        return __LINE__;
     }
 
     crypto_sha256__Ctx ctx;
@@ -392,7 +381,7 @@ static i32 crypto_sha256__test_tc4(void) {
     );
     crypto_sha256__Ctx_finalize(&ctx, hash_buf);
     if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
-        return crypto_sha256__TestResult_0007Failed;
+        return __LINE__;
     }
 
     return 0;
@@ -402,19 +391,19 @@ i32 crypto_sha256__test(void) {
     i32 result;
 
     result = crypto_sha256__test_tc1();
-    if (result < 0) {
+    if (result != 0) {
         return result;
     }
     result = crypto_sha256__test_tc2();
-    if (result < 0) {
+    if (result != 0) {
         return result;
     }
     result = crypto_sha256__test_tc3();
-    if (result < 0) {
+    if (result != 0) {
         return result;
     }
     result = crypto_sha256__test_tc4();
-    if (result < 0) {
+    if (result != 0) {
         return result;
     }
 
