@@ -26,7 +26,7 @@ extern "C" {
 //==================================================================================================
 // PUBLIC DEFINE
 //==================================================================================================
-#define CRYPTO_SHA256__BLOCK_U8_SIZE (32)
+#define CRYPTO_SHA256_M_BLOCK_U8_SIZE (32)
 
 //==================================================================================================
 // PUBLIC ENUM
@@ -41,7 +41,7 @@ typedef struct {
     u32 hash_buf[8];
     u32 bits_buf[2];
     u32 len;
-} crypto_sha256__Ctx;
+} crypto_sha256_m_Ctx;
 
 //==================================================================================================
 // PUBLIC UNION
@@ -54,11 +54,11 @@ typedef struct {
 //==================================================================================================
 // PUBLIC FUNCTION DECLARATION
 //==================================================================================================
-extern void crypto_sha256__compute(const u8* data_ref, u32 len, u8* hash_mut);
+extern void crypto_sha256_m_compute(const u8* data_ref, u32 len, u8* hash_mut);
 
-extern void crypto_sha256__Ctx_init(crypto_sha256__Ctx* self);
-extern void crypto_sha256__Ctx_update(crypto_sha256__Ctx* self, const u8* data_ref, u32 len);
-extern void crypto_sha256__Ctx_finalize(crypto_sha256__Ctx* self, u8* hash_mut);
+extern void crypto_sha256_m_Ctx_init(crypto_sha256_m_Ctx* self);
+extern void crypto_sha256_m_Ctx_update(crypto_sha256_m_Ctx* self, const u8* data_ref, u32 len);
+extern void crypto_sha256_m_Ctx_finalize(crypto_sha256_m_Ctx* self, u8* hash_mut);
 
 //==================================================================================================
 // GUARD END
