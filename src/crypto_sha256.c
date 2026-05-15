@@ -73,11 +73,11 @@ static const u32 crypto_sha256__k_tbl[64] = {
 // PUBLIC FUNCTION DEFINITION
 //==================================================================================================
 void crypto_sha256__compute(const u8* data_ref, u32 len, u8* hash_mut) {
-    crypto_sha256__Handle ctx;
+    crypto_sha256__Handle obj;
 
-    crypto_sha256__Handle_init(&ctx);
-    crypto_sha256__Handle_update(&ctx, data_ref, len);
-    crypto_sha256__Handle_finalize(&ctx, hash_mut);
+    crypto_sha256__Handle_init(&obj);
+    crypto_sha256__Handle_update(&obj, data_ref, len);
+    crypto_sha256__Handle_finalize(&obj, hash_mut);
 }
 
 void crypto_sha256__Handle_init(crypto_sha256__Handle* self) {
@@ -277,15 +277,15 @@ static i32 crypto_sha256__test_tc1(void) {
         return __LINE__;
     }
 
-    crypto_sha256__Handle ctx;
-    crypto_sha256__Handle_init(&ctx);
-    crypto_sha256__Handle_update(&ctx, &data_buf[0], strlen((const ichar*)data_buf) / 2);
+    crypto_sha256__Handle obj;
+    crypto_sha256__Handle_init(&obj);
+    crypto_sha256__Handle_update(&obj, &data_buf[0], strlen((const ichar*)data_buf) / 2);
     crypto_sha256__Handle_update(
-        &ctx,
+        &obj,
         &data_buf[strlen((const ichar*)data_buf) / 2],
         strlen((const ichar*)data_buf) - (strlen((const ichar*)data_buf) / 2)
     );
-    crypto_sha256__Handle_finalize(&ctx, hash_buf);
+    crypto_sha256__Handle_finalize(&obj, hash_buf);
     if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
         return __LINE__;
     }
@@ -308,15 +308,15 @@ static i32 crypto_sha256__test_tc2(void) {
         return __LINE__;
     }
 
-    crypto_sha256__Handle ctx;
-    crypto_sha256__Handle_init(&ctx);
-    crypto_sha256__Handle_update(&ctx, &data_buf[0], strlen((const ichar*)data_buf) / 2);
+    crypto_sha256__Handle obj;
+    crypto_sha256__Handle_init(&obj);
+    crypto_sha256__Handle_update(&obj, &data_buf[0], strlen((const ichar*)data_buf) / 2);
     crypto_sha256__Handle_update(
-        &ctx,
+        &obj,
         &data_buf[strlen((const ichar*)data_buf) / 2],
         strlen((const ichar*)data_buf) - (strlen((const ichar*)data_buf) / 2)
     );
-    crypto_sha256__Handle_finalize(&ctx, hash_buf);
+    crypto_sha256__Handle_finalize(&obj, hash_buf);
     if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
         return __LINE__;
     }
@@ -341,15 +341,15 @@ static i32 crypto_sha256__test_tc3(void) {
         return __LINE__;
     }
 
-    crypto_sha256__Handle ctx;
-    crypto_sha256__Handle_init(&ctx);
-    crypto_sha256__Handle_update(&ctx, &data_buf[0], strlen((const ichar*)data_buf) / 2);
+    crypto_sha256__Handle obj;
+    crypto_sha256__Handle_init(&obj);
+    crypto_sha256__Handle_update(&obj, &data_buf[0], strlen((const ichar*)data_buf) / 2);
     crypto_sha256__Handle_update(
-        &ctx,
+        &obj,
         &data_buf[strlen((const ichar*)data_buf) / 2],
         strlen((const ichar*)data_buf) - (strlen((const ichar*)data_buf) / 2)
     );
-    crypto_sha256__Handle_finalize(&ctx, hash_buf);
+    crypto_sha256__Handle_finalize(&obj, hash_buf);
     if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
         return __LINE__;
     }
@@ -372,15 +372,15 @@ static i32 crypto_sha256__test_tc4(void) {
         return __LINE__;
     }
 
-    crypto_sha256__Handle ctx;
-    crypto_sha256__Handle_init(&ctx);
-    crypto_sha256__Handle_update(&ctx, &data_buf[0], strlen((const ichar*)data_buf) / 2);
+    crypto_sha256__Handle obj;
+    crypto_sha256__Handle_init(&obj);
+    crypto_sha256__Handle_update(&obj, &data_buf[0], strlen((const ichar*)data_buf) / 2);
     crypto_sha256__Handle_update(
-        &ctx,
+        &obj,
         &data_buf[strlen((const ichar*)data_buf) / 2],
         strlen((const ichar*)data_buf) - (strlen((const ichar*)data_buf) / 2)
     );
-    crypto_sha256__Handle_finalize(&ctx, hash_buf);
+    crypto_sha256__Handle_finalize(&obj, hash_buf);
     if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
         return __LINE__;
     }
