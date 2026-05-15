@@ -26,6 +26,10 @@ extern "C" {
 //==================================================================================================
 // PUBLIC DEFINE
 //==================================================================================================
+#define CRYPTO_SHA__MAJOR_VERSION (0)
+#define CRYPTO_SHA__MINOR_VERSION (1)
+#define CRYPTO_SHA__PATCH_VERSION (0)
+
 #define CRYPTO_SHA256__BLOCK_U8_SIZE (32)
 
 //==================================================================================================
@@ -41,7 +45,7 @@ typedef struct {
     u32 hash_buf[8];
     u32 bits_buf[2];
     u32 len;
-} crypto_sha256__Ctx;
+} crypto_sha256__Handle;
 
 //==================================================================================================
 // PUBLIC UNION
@@ -56,9 +60,9 @@ typedef struct {
 //==================================================================================================
 extern void crypto_sha256__compute(const u8* data_ref, u32 len, u8* hash_mut);
 
-extern void crypto_sha256__Ctx_init(crypto_sha256__Ctx* self);
-extern void crypto_sha256__Ctx_update(crypto_sha256__Ctx* self, const u8* data_ref, u32 len);
-extern void crypto_sha256__Ctx_finalize(crypto_sha256__Ctx* self, u8* hash_mut);
+extern void crypto_sha256__Handle_init(crypto_sha256__Handle* self);
+extern void crypto_sha256__Handle_update(crypto_sha256__Handle* self, const u8* data_ref, u32 len);
+extern void crypto_sha256__Handle_finalize(crypto_sha256__Handle* self, u8* hash_mut);
 
 //==================================================================================================
 // GUARD END

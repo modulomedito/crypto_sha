@@ -48,8 +48,8 @@ static u32 crypto_sha256__g0(u32 x);
 static u32 crypto_sha256__g1(u32 x);
 static u32 crypto_sha256__word(u8* c_mut);
 
-static void crypto_sha256__Ctx_addbits(crypto_sha256__Ctx* self, u32 n);
-static void crypto_sha256__Ctx_hash(crypto_sha256__Ctx* self);
+static void crypto_sha256__Handle_addbits(crypto_sha256__Handle* self, u32 n);
+static void crypto_sha256__Handle_hash(crypto_sha256__Handle* self);
 
 //==================================================================================================
 // PRIVATE VARIABLE DEFINITION
@@ -73,14 +73,14 @@ static const u32 crypto_sha256__k_tbl[64] = {
 // PUBLIC FUNCTION DEFINITION
 //==================================================================================================
 void crypto_sha256__compute(const u8* data_ref, u32 len, u8* hash_mut) {
-    crypto_sha256__Ctx ctx;
+    crypto_sha256__Handle ctx;
 
-    crypto_sha256__Ctx_init(&ctx);
-    crypto_sha256__Ctx_update(&ctx, data_ref, len);
-    crypto_sha256__Ctx_finalize(&ctx, hash_mut);
+    crypto_sha256__Handle_init(&ctx);
+    crypto_sha256__Handle_update(&ctx, data_ref, len);
+    crypto_sha256__Handle_finalize(&ctx, hash_mut);
 }
 
-void crypto_sha256__Ctx_init(crypto_sha256__Ctx* self) {
+void crypto_sha256__Handle_init(crypto_sha256__Handle* self) {
     self->len = 0;
     self->bits_buf[0] = 0;
     self->bits_buf[1] = 0;
@@ -94,7 +94,7 @@ void crypto_sha256__Ctx_init(crypto_sha256__Ctx* self) {
     self->hash_buf[7] = 0x5be0cd19;
 }
 
-void crypto_sha256__Ctx_update(crypto_sha256__Ctx* self, const u8* data_ref, u32 len) {
+void crypto_sha256__Handle_update(crypto_sha256__Handle* self, const u8* data_ref, u32 len) {
     if (data_ref == NULL) {
         return;
     }
@@ -105,14 +105,14 @@ void crypto_sha256__Ctx_update(crypto_sha256__Ctx* self, const u8* data_ref, u32
     for (u32 i = 0; i < len; i++) {
         self->data_buf[self->len++] = data_ref[i];
         if (self->len == sizeof(self->data_buf)) {
-            crypto_sha256__Ctx_hash(self);
-            crypto_sha256__Ctx_addbits(self, 8 * sizeof(self->data_buf));
+            crypto_sha256__Handle_hash(self);
+            crypto_sha256__Handle_addbits(self, 8 * sizeof(self->data_buf));
             self->len = 0;
         }
     }
 }
 
-void crypto_sha256__Ctx_finalize(crypto_sha256__Ctx* self, u8* hash_mut) {
+void crypto_sha256__Handle_finalize(crypto_sha256__Handle* self, u8* hash_mut) {
     u32 i, j;
 
     j = self->len % sizeof(self->data_buf);
@@ -122,13 +122,13 @@ void crypto_sha256__Ctx_finalize(crypto_sha256__Ctx* self, u8* hash_mut) {
     }
 
     if (self->len > 55) {
-        crypto_sha256__Ctx_hash(self);
+        crypto_sha256__Handle_hash(self);
         for (j = 0; j < sizeof(self->data_buf); j++) {
             self->data_buf[j] = 0x00;
         }
     }
 
-    crypto_sha256__Ctx_addbits(self, self->len * 8);
+    crypto_sha256__Handle_addbits(self, self->len * 8);
     self->data_buf[63] = crypto_sha256__shb(self->bits_buf[0], 0);
     self->data_buf[62] = crypto_sha256__shb(self->bits_buf[0], 8);
     self->data_buf[61] = crypto_sha256__shb(self->bits_buf[0], 16);
@@ -137,7 +137,7 @@ void crypto_sha256__Ctx_finalize(crypto_sha256__Ctx* self, u8* hash_mut) {
     self->data_buf[58] = crypto_sha256__shb(self->bits_buf[1], 8);
     self->data_buf[57] = crypto_sha256__shb(self->bits_buf[1], 16);
     self->data_buf[56] = crypto_sha256__shb(self->bits_buf[1], 24);
-    crypto_sha256__Ctx_hash(self);
+    crypto_sha256__Handle_hash(self);
 
     if (hash_mut != NULL) {
         for (i = 0, j = 24; i < 4; i++, j -= 8) {
@@ -201,14 +201,14 @@ static u32 crypto_sha256__word(u8* c_mut) {
     );
 }
 
-static void crypto_sha256__Ctx_addbits(crypto_sha256__Ctx* self, u32 n) {
+static void crypto_sha256__Handle_addbits(crypto_sha256__Handle* self, u32 n) {
     if (self->bits_buf[0] > (0xffffffff - n)) {
         self->bits_buf[1] = (self->bits_buf[1] + 1) & 0xFFFFFFFF;
     }
     self->bits_buf[0] = (self->bits_buf[0] + n) & 0xFFFFFFFF;
 }
 
-static void crypto_sha256__Ctx_hash(crypto_sha256__Ctx* self) {
+static void crypto_sha256__Handle_hash(crypto_sha256__Handle* self) {
     u32 a, b, c, d, e, f, g, h;
     u32 temp_buf[2];
 
@@ -277,15 +277,15 @@ static i32 crypto_sha256__test_tc1(void) {
         return __LINE__;
     }
 
-    crypto_sha256__Ctx ctx;
-    crypto_sha256__Ctx_init(&ctx);
-    crypto_sha256__Ctx_update(&ctx, &data_buf[0], strlen((const ichar*)data_buf) / 2);
-    crypto_sha256__Ctx_update(
+    crypto_sha256__Handle ctx;
+    crypto_sha256__Handle_init(&ctx);
+    crypto_sha256__Handle_update(&ctx, &data_buf[0], strlen((const ichar*)data_buf) / 2);
+    crypto_sha256__Handle_update(
         &ctx,
         &data_buf[strlen((const ichar*)data_buf) / 2],
         strlen((const ichar*)data_buf) - (strlen((const ichar*)data_buf) / 2)
     );
-    crypto_sha256__Ctx_finalize(&ctx, hash_buf);
+    crypto_sha256__Handle_finalize(&ctx, hash_buf);
     if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
         return __LINE__;
     }
@@ -308,15 +308,15 @@ static i32 crypto_sha256__test_tc2(void) {
         return __LINE__;
     }
 
-    crypto_sha256__Ctx ctx;
-    crypto_sha256__Ctx_init(&ctx);
-    crypto_sha256__Ctx_update(&ctx, &data_buf[0], strlen((const ichar*)data_buf) / 2);
-    crypto_sha256__Ctx_update(
+    crypto_sha256__Handle ctx;
+    crypto_sha256__Handle_init(&ctx);
+    crypto_sha256__Handle_update(&ctx, &data_buf[0], strlen((const ichar*)data_buf) / 2);
+    crypto_sha256__Handle_update(
         &ctx,
         &data_buf[strlen((const ichar*)data_buf) / 2],
         strlen((const ichar*)data_buf) - (strlen((const ichar*)data_buf) / 2)
     );
-    crypto_sha256__Ctx_finalize(&ctx, hash_buf);
+    crypto_sha256__Handle_finalize(&ctx, hash_buf);
     if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
         return __LINE__;
     }
@@ -326,7 +326,8 @@ static i32 crypto_sha256__test_tc2(void) {
 
 static i32 crypto_sha256__test_tc3(void) {
     u8 data_buf[] = {
-        "bhn5bjmoniertqea40wro2upyflkydsibsk8ylkmgbvwi420t44cq034eou1szc1k0mk46oeb7ktzmlxqkbte2sy"};
+        "bhn5bjmoniertqea40wro2upyflkydsibsk8ylkmgbvwi420t44cq034eou1szc1k0mk46oeb7ktzmlxqkbte2sy"
+    };
     u8 hash_buf[CRYPTO_SHA256__BLOCK_U8_SIZE];
     u8 expected_hash_buf[CRYPTO_SHA256__BLOCK_U8_SIZE] = {
         0x90, 0x85, 0xdf, 0x2f, 0x02, 0xe0, 0xcc, 0x45, //
@@ -340,15 +341,15 @@ static i32 crypto_sha256__test_tc3(void) {
         return __LINE__;
     }
 
-    crypto_sha256__Ctx ctx;
-    crypto_sha256__Ctx_init(&ctx);
-    crypto_sha256__Ctx_update(&ctx, &data_buf[0], strlen((const ichar*)data_buf) / 2);
-    crypto_sha256__Ctx_update(
+    crypto_sha256__Handle ctx;
+    crypto_sha256__Handle_init(&ctx);
+    crypto_sha256__Handle_update(&ctx, &data_buf[0], strlen((const ichar*)data_buf) / 2);
+    crypto_sha256__Handle_update(
         &ctx,
         &data_buf[strlen((const ichar*)data_buf) / 2],
         strlen((const ichar*)data_buf) - (strlen((const ichar*)data_buf) / 2)
     );
-    crypto_sha256__Ctx_finalize(&ctx, hash_buf);
+    crypto_sha256__Handle_finalize(&ctx, hash_buf);
     if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
         return __LINE__;
     }
@@ -371,15 +372,15 @@ static i32 crypto_sha256__test_tc4(void) {
         return __LINE__;
     }
 
-    crypto_sha256__Ctx ctx;
-    crypto_sha256__Ctx_init(&ctx);
-    crypto_sha256__Ctx_update(&ctx, &data_buf[0], strlen((const ichar*)data_buf) / 2);
-    crypto_sha256__Ctx_update(
+    crypto_sha256__Handle ctx;
+    crypto_sha256__Handle_init(&ctx);
+    crypto_sha256__Handle_update(&ctx, &data_buf[0], strlen((const ichar*)data_buf) / 2);
+    crypto_sha256__Handle_update(
         &ctx,
         &data_buf[strlen((const ichar*)data_buf) / 2],
         strlen((const ichar*)data_buf) - (strlen((const ichar*)data_buf) / 2)
     );
-    crypto_sha256__Ctx_finalize(&ctx, hash_buf);
+    crypto_sha256__Handle_finalize(&ctx, hash_buf);
     if (memcmp(hash_buf, expected_hash_buf, CRYPTO_SHA256__BLOCK_U8_SIZE) != 0) {
         return __LINE__;
     }
