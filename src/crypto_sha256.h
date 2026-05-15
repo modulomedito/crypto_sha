@@ -26,9 +26,9 @@ extern "C" {
 //==================================================================================================
 // PUBLIC DEFINE
 //==================================================================================================
-#define CRYPTO_SHA__MAJOR_VERSION (0)
-#define CRYPTO_SHA__MINOR_VERSION (1)
-#define CRYPTO_SHA__PATCH_VERSION (0)
+#define CRYPTO_SHA256__MAJOR_VERSION (0)
+#define CRYPTO_SHA256__MINOR_VERSION (1)
+#define CRYPTO_SHA256__PATCH_VERSION (0)
 
 #define CRYPTO_SHA256__BLOCK_U8_SIZE (32)
 
