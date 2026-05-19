@@ -95,20 +95,44 @@ void crypto_sha256__Handle_init(crypto_sha256__Handle* self) {
 }
 
 void crypto_sha256__Handle_update(crypto_sha256__Handle* self, const u8* data_ref, u32 len) {
+    u32 fill, i;
+
     if (data_ref == NULL) {
         return;
     }
-    if (self->len >= sizeof(self->data_buf)) {
+
+    fill = sizeof(self->data_buf) - self->len;
+
+    if (len < fill) {
+        for (i = 0; i < len; i++) {
+            self->data_buf[self->len++] = data_ref[i];
+        }
         return;
     }
 
-    for (u32 i = 0; i < len; i++) {
-        self->data_buf[self->len++] = data_ref[i];
-        if (self->len == sizeof(self->data_buf)) {
-            crypto_sha256__Handle_hash(self);
-            crypto_sha256__Handle_addbits(self, 8 * sizeof(self->data_buf));
-            self->len = 0;
+    if (self->len > 0) {
+        for (i = 0; i < fill; i++) {
+            self->data_buf[self->len++] = data_ref[i];
         }
+        crypto_sha256__Handle_hash(self);
+        crypto_sha256__Handle_addbits(self, 8 * sizeof(self->data_buf));
+        self->len = 0;
+        data_ref += fill;
+        len -= fill;
+    }
+
+    while (len >= sizeof(self->data_buf)) {
+        for (i = 0; i < sizeof(self->data_buf); i++) {
+            self->data_buf[i] = data_ref[i];
+        }
+        crypto_sha256__Handle_hash(self);
+        crypto_sha256__Handle_addbits(self, 8 * sizeof(self->data_buf));
+        data_ref += sizeof(self->data_buf);
+        len -= sizeof(self->data_buf);
+    }
+
+    for (i = 0; i < len; i++) {
+        self->data_buf[self->len++] = data_ref[i];
     }
 }
 
