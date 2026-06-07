@@ -22,6 +22,16 @@ target("crypto_sha")
     -- Apply the collected include directories to the target
     add_includedirs(includes)
 
+    -- Ensure macOS builds use a stable SDK symlink path so standard headers
+    -- (e.g. inttypes.h) resolve even if a stale versioned SDK path is cached.
+    if is_plat("macosx") then
+        local sdk_path = "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
+        if os.isdir(sdk_path) then
+            add_cxflags("-isysroot " .. sdk_path, {force = true})
+            add_ldflags("-isysroot " .. sdk_path, {force = true})
+        end
+    end
+
     -- Set the C runtime library to multi-threaded (MT) only for Windows
     if is_plat("windows") then
         set_runtimes("MT")

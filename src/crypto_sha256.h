@@ -58,11 +58,11 @@ typedef struct {
 //==================================================================================================
 // PUBLIC FUNCTION DECLARATION
 //==================================================================================================
-extern void crypto_sha256__compute(const u8* data_ref, u32 len, u8* hash_mut);
+extern void crypto_sha256__compute(const u8 *data_ref, u32 len, u8 *hash_mut);
 
-extern void crypto_sha256__Handle_init(crypto_sha256__Handle* self);
-extern void crypto_sha256__Handle_update(crypto_sha256__Handle* self, const u8* data_ref, u32 len);
-extern void crypto_sha256__Handle_finalize(crypto_sha256__Handle* self, u8* hash_mut);
+extern void crypto_sha256__Handle_init(crypto_sha256__Handle *self);
+extern void crypto_sha256__Handle_update(crypto_sha256__Handle *self, const u8 *data_ref, u32 len);
+extern void crypto_sha256__Handle_finalize(crypto_sha256__Handle *self, u8 *hash_mut);
 
 //==================================================================================================
 // GUARD END
