@@ -9,6 +9,7 @@
 // INCLUDE
 //==================================================================================================
 #include "crypto_sha1.h"
+#include <stdio.h>
 #include <string.h>
 
 //==================================================================================================
@@ -61,7 +62,6 @@ crypto_sha1__Ret crypto_sha1__compute(
 ) {
     if ((data_ref == NULL) || //
         (hash_mut == NULL) || //
-        (data_len == 0) || //
         (hash_buf_size < CRYPTO_SHA1__HASH_SIZE)) {
         return crypto_sha1__Ret_InvalidArg;
     }
@@ -320,4 +320,163 @@ static void crypto_sha1__Ctx_pad_block(crypto_sha1__Ctx *self) {
 
 //==================================================================================================
 // TEST
+//==================================================================================================
+#include <string.h>
+
+#define ENABLE_DEBUG_PRINT (0)
+
+#if defined(ENABLE_DEBUG_PRINT) && (ENABLE_DEBUG_PRINT > 0)
+#include <stdio.h>
+#endif // ENABLE_DEBUG_PRINT
+
+static i32 crypto_sha1__test_tc1(void) {
+    const u8 string_buf[] = "";
+    const u8 expect_buf[] = {0xda, 0x39, 0xa3, 0xee, //
+                             0x5e, 0x6b, 0x4b, 0x0d, //
+                             0x32, 0x55, 0xbf, 0xef, //
+                             0x95, 0x60, 0x18, 0x90, //
+                             0xaf, 0xd8, 0x07, 0x09};
+
+    u8 hash_buf[20];
+    memset(hash_buf, 0, sizeof(hash_buf));
+
+    crypto_sha1__Ret ret =
+        crypto_sha1__compute(string_buf, strlen(string_buf), hash_buf, sizeof(hash_buf));
+
+    if (ret != crypto_sha1__Ret_Ok) {
+        return __LINE__;
+    }
+
+    i32 cmp = memcmp(expect_buf, hash_buf, sizeof(expect_buf));
+    if (cmp != 0) {
+#if defined(ENABLE_DEBUG_PRINT) && (ENABLE_DEBUG_PRINT > 0)
+        for (u32 i = 0; i < sizeof(hash_buf); i++) {
+            printf("hash[%d] = 0x%02x\n", i, hash_buf[i]);
+        }
+#endif // ENABLE_DEBUG_PRINT
+        return __LINE__;
+    }
+
+    return 0;
+}
+
+static i32 crypto_sha1__test_tc2(void) {
+    const u8 string_buf[] = "abc";
+    const u8 expect_buf[] = {0xa9, 0x99, 0x3e, 0x36, //
+                             0x47, 0x06, 0x81, 0x6a, //
+                             0xba, 0x3e, 0x25, 0x71, //
+                             0x78, 0x50, 0xc2, 0x6c, //
+                             0x9c, 0xd0, 0xd8, 0x9d};
+
+    u8 hash_buf[20];
+    memset(hash_buf, 0, sizeof(hash_buf));
+
+    crypto_sha1__Ret ret =
+        crypto_sha1__compute(string_buf, strlen(string_buf), hash_buf, sizeof(hash_buf));
+
+    if (ret != crypto_sha1__Ret_Ok) {
+        return __LINE__;
+    }
+
+    i32 cmp = memcmp(expect_buf, hash_buf, sizeof(expect_buf));
+    if (cmp != 0) {
+#if defined(ENABLE_DEBUG_PRINT) && (ENABLE_DEBUG_PRINT > 0)
+        for (u32 i = 0; i < sizeof(hash_buf); i++) {
+            printf("hash[%d] = 0x%02x\n", i, hash_buf[i]);
+        }
+#endif // ENABLE_DEBUG_PRINT
+        return __LINE__;
+    }
+
+    return 0;
+}
+
+static i32 crypto_sha1__test_tc3(void) {
+    const u8 string_buf[] = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
+    const u8 expect_buf[] = {0x84, 0x98, 0x3e, 0x44, //
+                             0x1c, 0x3b, 0xd2, 0x6e, //
+                             0xba, 0xae, 0x4a, 0xa1, //
+                             0xf9, 0x51, 0x29, 0xe5, //
+                             0xe5, 0x46, 0x70, 0xf1};
+
+    u8 hash_buf[20];
+    memset(hash_buf, 0, sizeof(hash_buf));
+
+    crypto_sha1__Ret ret =
+        crypto_sha1__compute(string_buf, strlen(string_buf), hash_buf, sizeof(hash_buf));
+
+    if (ret != crypto_sha1__Ret_Ok) {
+        return __LINE__;
+    }
+
+    i32 cmp = memcmp(expect_buf, hash_buf, sizeof(expect_buf));
+    if (cmp != 0) {
+#if defined(ENABLE_DEBUG_PRINT) && (ENABLE_DEBUG_PRINT > 0)
+        for (u32 i = 0; i < sizeof(hash_buf); i++) {
+            printf("hash[%d] = 0x%02x\n", i, hash_buf[i]);
+        }
+#endif // ENABLE_DEBUG_PRINT
+        return __LINE__;
+    }
+
+    return 0;
+}
+
+static i32 crypto_sha1__test_tc4(void) {
+    const u8 string_buf[] = "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmn"
+                            "opjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu";
+    const u8 expect_buf[] = {0xa4, 0x9b, 0x24, 0x46, //
+                             0xa0, 0x2c, 0x64, 0x5b, //
+                             0xf4, 0x19, 0xf9, 0x95, //
+                             0xb6, 0x70, 0x91, 0x25, //
+                             0x3a, 0x04, 0xa2, 0x59};
+
+    u8 hash_buf[20];
+    memset(hash_buf, 0, sizeof(hash_buf));
+
+    crypto_sha1__Ret ret =
+        crypto_sha1__compute(string_buf, strlen(string_buf), hash_buf, sizeof(hash_buf));
+
+    if (ret != crypto_sha1__Ret_Ok) {
+        return __LINE__;
+    }
+
+    i32 cmp = memcmp(expect_buf, hash_buf, sizeof(expect_buf));
+    if (cmp != 0) {
+#if defined(ENABLE_DEBUG_PRINT) && (ENABLE_DEBUG_PRINT > 0)
+        for (u32 i = 0; i < sizeof(hash_buf); i++) {
+            printf("hash[%d] = 0x%02x\n", i, hash_buf[i]);
+        }
+#endif // ENABLE_DEBUG_PRINT
+        return __LINE__;
+    }
+
+    return 0;
+}
+
+i32 crypto_sha1__test(void) {
+    i32 result;
+
+    result = crypto_sha1__test_tc1();
+    if (result != 0) {
+        return result;
+    }
+    result = crypto_sha1__test_tc2();
+    if (result != 0) {
+        return result;
+    }
+    result = crypto_sha1__test_tc3();
+    if (result != 0) {
+        return result;
+    }
+    result = crypto_sha1__test_tc4();
+    if (result != 0) {
+        return result;
+    }
+
+    return 0;
+}
+
+//==================================================================================================
+// PRIVATE FUNCTION DEFINITION
 //==================================================================================================

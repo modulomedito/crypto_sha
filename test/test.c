@@ -63,6 +63,7 @@
 // PUBLIC FUNCTION DEFINITION
 //==================================================================================================
 i32 main(void) {
+    TEST__RUN(crypto_sha1);
     TEST__RUN(crypto_sha256);
     printf("All tests passed!\n");
     return 0;
