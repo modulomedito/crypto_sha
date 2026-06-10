@@ -316,14 +316,14 @@ static void crypto_sha1_Handle_pad_block(crypto_sha1_Handle *self) {
         }
     }
 
-    self->msg_block_buf[56] = self->length_high >> 0x18;
-    self->msg_block_buf[57] = self->length_high >> 0x10;
-    self->msg_block_buf[58] = self->length_high >> 0x08;
-    self->msg_block_buf[59] = self->length_high;
-    self->msg_block_buf[60] = self->length_low >> 0x18;
-    self->msg_block_buf[61] = self->length_low >> 0x10;
-    self->msg_block_buf[62] = self->length_low >> 0x08;
-    self->msg_block_buf[63] = self->length_low;
+    self->msg_block_buf[56] = (self->length_high >> 0x18) & 0xff;
+    self->msg_block_buf[57] = (self->length_high >> 0x10) & 0xff;
+    self->msg_block_buf[58] = (self->length_high >> 0x08) & 0xff;
+    self->msg_block_buf[59] = self->length_high & 0xff;
+    self->msg_block_buf[60] = (self->length_low >> 0x18) & 0xff;
+    self->msg_block_buf[61] = (self->length_low >> 0x10) & 0xff;
+    self->msg_block_buf[62] = (self->length_low >> 0x08) & 0xff;
+    self->msg_block_buf[63] = self->length_low & 0xff;
 
     crypto_sha1_Handle_process_block(self);
 }
