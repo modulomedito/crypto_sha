@@ -26,22 +26,22 @@ extern "C" {
 //==================================================================================================
 // PUBLIC DEFINE
 //==================================================================================================
-#define CRYPTO_SHA1__MAJOR_VERSION (0)
-#define CRYPTO_SHA1__MINOR_VERSION (1)
-#define CRYPTO_SHA1__PATCH_VERSION (0)
+#define CRYPTO_SHA1_MAJOR_VERSION (0)
+#define CRYPTO_SHA1_MINOR_VERSION (2)
+#define CRYPTO_SHA1_PATCH_VERSION (0)
 
-#define CRYPTO_SHA1__HASH_SIZE (20)
-#define CRYPTO_SHA1__FLAG_FINISHED (0x01)
-#define CRYPTO_SHA1__FLAG_ERROR (0x02)
+#define CRYPTO_SHA1_HASH_SIZE (20)
+#define CRYPTO_SHA1_FLAG_FINISHED (0x01)
+#define CRYPTO_SHA1_FLAG_ERROR (0x02)
 
 //==================================================================================================
 // PUBLIC ENUM
 //==================================================================================================
 typedef enum {
-    crypto_sha1__Ret_Ok = 0,
-    crypto_sha1__Ret_InvalidArg,
-    crypto_sha1__Ret_Error,
-} crypto_sha1__Ret;
+    crypto_sha1_Ret_Ok = 0,
+    crypto_sha1_Ret_InvalidArg,
+    crypto_sha1_Ret_Error,
+} crypto_sha1_Ret;
 
 //==================================================================================================
 // PUBLIC STRUCT
@@ -53,7 +53,7 @@ typedef struct {
     u32 length_high;
     u16 msg_block_index;
     u8 flags;
-} crypto_sha1__Ctx;
+} crypto_sha1_Handle;
 
 //==================================================================================================
 // PUBLIC UNION
@@ -66,21 +66,21 @@ typedef struct {
 //==================================================================================================
 // PUBLIC FUNCTION DECLARATION
 //==================================================================================================
-extern crypto_sha1__Ret crypto_sha1__compute(
+extern crypto_sha1_Ret crypto_sha1_compute(
     const u8 *data_ref,
     u32 data_len,
     u8 *hash_mut,
     u32 hash_buf_size
 );
 
-extern crypto_sha1__Ret crypto_sha1__Ctx_init(crypto_sha1__Ctx *self);
-extern crypto_sha1__Ret crypto_sha1__Ctx_update(
-    crypto_sha1__Ctx *self,
+extern crypto_sha1_Ret crypto_sha1_Handle_init(crypto_sha1_Handle *self);
+extern crypto_sha1_Ret crypto_sha1_Handle_update(
+    crypto_sha1_Handle *self,
     const u8 *data_ref,
     u32 data_len
 );
-extern crypto_sha1__Ret crypto_sha1__Ctx_finalize(
-    crypto_sha1__Ctx *self,
+extern crypto_sha1_Ret crypto_sha1_Handle_finalize(
+    crypto_sha1_Handle *self,
     u8 *hash_mut,
     u32 hash_buf_size
 );

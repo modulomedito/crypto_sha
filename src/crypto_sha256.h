@@ -26,15 +26,20 @@ extern "C" {
 //==================================================================================================
 // PUBLIC DEFINE
 //==================================================================================================
-#define CRYPTO_SHA256__MAJOR_VERSION (0)
-#define CRYPTO_SHA256__MINOR_VERSION (1)
-#define CRYPTO_SHA256__PATCH_VERSION (1)
+#define CRYPTO_SHA256_MAJOR_VERSION (0)
+#define CRYPTO_SHA256_MINOR_VERSION (2)
+#define CRYPTO_SHA256_PATCH_VERSION (0)
 
-#define CRYPTO_SHA256__BLOCK_U8_SIZE (32)
+#define CRYPTO_SHA256_BLOCK_U8_SIZE (32)
 
 //==================================================================================================
 // PUBLIC ENUM
 //==================================================================================================
+typedef enum {
+    crypto_sha256_Ret_Ok = 0,
+    crypto_sha256_Ret_InvalidArg,
+    crypto_sha256_Ret_Error,
+} crypto_sha256_Ret;
 
 //==================================================================================================
 // PUBLIC STRUCT
@@ -44,8 +49,8 @@ typedef struct {
     u8 data_buf[64];
     u32 hash_buf[8];
     u32 bits_buf[2];
-    u32 len;
-} crypto_sha256__Handle;
+    u32 in_block_data_idx;
+} crypto_sha256_Handle;
 
 //==================================================================================================
 // PUBLIC UNION
@@ -58,11 +63,24 @@ typedef struct {
 //==================================================================================================
 // PUBLIC FUNCTION DECLARATION
 //==================================================================================================
-extern void crypto_sha256__compute(const u8 *data_ref, u32 len, u8 *hash_mut);
+extern crypto_sha256_Ret crypto_sha256_compute(
+    const u8 *data_ref,
+    u32 len,
+    u8 *hash_mut,
+    u32 hash_buf_size
+);
 
-extern void crypto_sha256__Handle_init(crypto_sha256__Handle *self);
-extern void crypto_sha256__Handle_update(crypto_sha256__Handle *self, const u8 *data_ref, u32 len);
-extern void crypto_sha256__Handle_finalize(crypto_sha256__Handle *self, u8 *hash_mut);
+extern crypto_sha256_Ret crypto_sha256_Handle_init(crypto_sha256_Handle *self);
+extern crypto_sha256_Ret crypto_sha256_Handle_update(
+    crypto_sha256_Handle *self,
+    const u8 *data_ref,
+    u32 len
+);
+extern crypto_sha256_Ret crypto_sha256_Handle_finalize(
+    crypto_sha256_Handle *self,
+    u8 *hash_mut,
+    u32 hash_buf_size
+);
 
 //==================================================================================================
 // GUARD END

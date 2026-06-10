@@ -47,9 +47,9 @@ typedef unsigned char uchar;
 //==================================================================================================
 // PUBLIC DEFINE
 //==================================================================================================
-#define RUSTLIKE_TYPES__MAJOR_VERSION (0)
-#define RUSTLIKE_TYPES__MINOR_VERSION (2)
-#define RUSTLIKE_TYPES__PATCH_VERSION (0)
+#define RUSTLIKE_TYPES_MAJOR_VERSION (0)
+#define RUSTLIKE_TYPES_MINOR_VERSION (3)
+#define RUSTLIKE_TYPES_PATCH_VERSION (0)
 
 #ifndef bool
 #define bool bool_t
@@ -70,85 +70,6 @@ typedef unsigned char uchar;
 //==================================================================================================
 // PUBLIC STRUCT
 //==================================================================================================
-typedef struct {
-    u8* ptr;
-    usize len;
-} Slice_u8;
-
-typedef struct {
-    u16* ptr;
-    usize len;
-} Slice_u16;
-
-typedef struct {
-    u32* ptr;
-    usize len;
-} Slice_u32;
-
-typedef struct {
-    u64* ptr;
-    usize len;
-} Slice_u64;
-
-typedef struct {
-    i8* ptr;
-    usize len;
-} Slice_i8;
-
-typedef struct {
-    i16* ptr;
-    usize len;
-} Slice_i16;
-
-typedef struct {
-    i32* ptr;
-    usize len;
-} Slice_i32;
-
-typedef struct {
-    i64* ptr;
-    usize len;
-} Slice_i64;
-
-typedef struct {
-    f32* ptr;
-    usize len;
-} Slice_f32;
-
-typedef struct {
-    f64* ptr;
-    usize len;
-} Slice_f64;
-
-typedef struct {
-    uptr* ptr;
-    usize len;
-} Slice_uptr;
-
-typedef struct {
-    iptr* ptr;
-    usize len;
-} Slice_iptr;
-
-typedef struct {
-    isize* ptr;
-    usize len;
-} Slice_isize;
-
-typedef struct {
-    usize* ptr;
-    usize len;
-} Slice_usize;
-
-typedef struct {
-    ichar* ptr;
-    usize len;
-} Slice_ichar;
-
-typedef struct {
-    uchar* ptr;
-    usize len;
-} Slice_uchar;
 
 //==================================================================================================
 // PUBLIC UNION

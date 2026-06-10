@@ -18,13 +18,13 @@
 //==================================================================================================
 // PRIVATE DEFINE
 //==================================================================================================
-#define TEST__CONCAT_HELPER(a, b) a##b
-#define TEST__CONCAT(a, b) TEST__CONCAT_HELPER(a, b)
+#define TEST_CONCAT_HELPER(a, b) a##b
+#define TEST_CONCAT(a, b) TEST_CONCAT_HELPER(a, b)
 
-#define TEST__RUN(mod)                                                                             \
+#define TEST_RUN(mod)                                                                              \
     do {                                                                                           \
-        extern i32 TEST__CONCAT(mod, __test)(void);                                                \
-        i32 result = TEST__CONCAT(mod, __test)();                                                  \
+        extern i32 TEST_CONCAT(mod, _test)(void);                                                  \
+        i32 result = TEST_CONCAT(mod, _test)();                                                    \
         if (result != 0) {                                                                         \
             printf("Test " #mod " FAILED! (Failed line = %d)\n", result);                          \
             goto failed;                                                                           \
@@ -63,8 +63,8 @@
 // PUBLIC FUNCTION DEFINITION
 //==================================================================================================
 i32 main(void) {
-    TEST__RUN(crypto_sha1);
-    TEST__RUN(crypto_sha256);
+    TEST_RUN(crypto_sha1);
+    TEST_RUN(crypto_sha256);
     printf("All tests passed!\n");
     return 0;
 
